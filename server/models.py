@@ -50,12 +50,16 @@ class Camper(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    age = db.Column(db.Integer)
+    age = db.Column(db.Integer, db.CheckConstraint( 'age >= 18'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     signups = db.relationship('Signup', backref='camper')
     activities = association_proxy('signups', 'activity')
+
+    __table_args__ = (
+        db.CheckConstraint( 'age >= 18' ), 
+    )
 
     @validates('name')
     def validates_name(self, key, name):
