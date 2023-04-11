@@ -22,7 +22,8 @@ class Activity(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    signups = db.relationship('Signup', backref='activity')
+    signups = db.relationship(
+        'Signup', back_populates='activity', cascade="all, delete, delete-orphan")
     activities = association_proxy('signups', 'activity')
 
 class Signup(db.Model, SerializerMixin):
@@ -36,6 +37,9 @@ class Signup(db.Model, SerializerMixin):
     time = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    camper = db.relationship('Camper', back_populates='signups')
+    activity = db.relationship('Activity', back_populates='signups')
 
     @validates('time')
     def validates_name(self, key, time):
@@ -54,7 +58,7 @@ class Camper(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    signups = db.relationship('Signup', backref='camper')
+    signups = db.relationship('Signup', back_populates='camper')
     activities = association_proxy('signups', 'activity')
 
     __table_args__ = (

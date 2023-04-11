@@ -52,10 +52,6 @@ def activity_by_id(id):
     if not found_activity:
         return make_response( { 'error': '404: Activity not found' }, 404)
     elif request.method == 'DELETE':
-        found_signup = Signup.query.filter(Signup.activity_id == id).first()
-        if found_signup:
-            db.session.delete(found_signup)
-            db.session.commit()
         db.session.delete(found_activity)
         db.session.commit()
         return {}, 204
